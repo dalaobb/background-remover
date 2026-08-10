@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import ImgCompareSlider from './ImgCompareSlider';
 import ImgModal from './ImgModal';
 import FileSaver from 'file-saver';
+import { t, type Lang } from '@/i18n';
 
 export interface IPreviewDownloadProps {
   beforeFile: Blob;
   afterFile?: Blob & { name: string };
   processing: boolean;
+  lang?: Lang;
   className?: string;
   onClose: () => void;
 }
@@ -24,6 +26,7 @@ export default function PreviewDownload({
   afterFile,
   className,
   processing,
+  lang = 'en',
   onClose,
 }: IPreviewDownloadProps) {
   const [beforeSrc, setBeforeSrc] = useState<string>();
@@ -80,6 +83,7 @@ export default function PreviewDownload({
         beforeSrc={beforeSrc}
         afterSrc={afterSrc}
         processing={processing}
+        lang={lang}
         onClose={onClose}
       />
       <div className="p-4">
@@ -89,7 +93,9 @@ export default function PreviewDownload({
         <p className="text-black/80 dark:text-white/80 text-xs mb-3 flex justify-between">
           <span>{formatFileSize(beforeFile.size)}</span>
           {afterFile?.size && (
-            <span>After: {formatFileSize(afterFile.size)}</span>
+            <span>
+              {t(lang, 'after')} {formatFileSize(afterFile.size)}
+            </span>
           )}
         </p>
         <div className="flex gap-8">
@@ -98,7 +104,7 @@ export default function PreviewDownload({
             // className="flex-1 px-3 py-2 rounded-lg text-sm/6 font-semibold text-gray-950 ring-1 ring-gray-950/10 hover:ring-gray-950/20  transition-all"
             className="flex-1 px-3 py-2 bg-sky-600 text-white rounded-lg text-sm hover:bg-sky-700 transition-all"
           >
-            Preview
+            {t(lang, 'preview')}
           </button>
           {!!afterSrc && (
             <>
@@ -106,13 +112,13 @@ export default function PreviewDownload({
                 onClick={copyFile}
                 className="flex-1 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition-all"
               >
-                {copied ? '✅ Copied!' : 'Copy'}
+                {copied ? t(lang, 'copied') : t(lang, 'copy')}
               </button>
               <button
                 onClick={saveFile}
                 className="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-all"
               >
-                Save
+                {t(lang, 'save')}
               </button>
             </>
           )}

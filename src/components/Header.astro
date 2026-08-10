@@ -2,15 +2,20 @@
 // import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeIcon from './ThemeIcon.astro';
+import LanguageSwitch from './LanguageSwitch.astro';
+const { lang } = Astro.props;
 ---
 
 <header>
   <nav
     class="flex justify-between items-center h-18 border-b border-gray-950/5 dark:border-white/10"
   >
-    <Navigation />
+    <Navigation lang={lang} />
     <!-- <Hamburger /> -->
 
-    <ThemeIcon />
+    <div class="flex items-center gap-2">
+      <LanguageSwitch lang={lang} />
+      <ThemeIcon />
+    </div>
   </nav>
 </header>

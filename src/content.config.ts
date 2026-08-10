@@ -19,7 +19,11 @@ import { /* z, */ defineCollection } from 'astro:content';
 // });
 
 const content = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.md', base: './src/content' }),
+  loader: glob({
+    pattern: '**/[^_]*.md',
+    base: './src/content',
+    generateId: ({ entry }) => entry.replace(/\.[^/.]+$/, ''),
+  }),
 });
 // 导出一个单独的 `collections` 对象用以注册你的集合（们）
 export const collections = { /* blog, */ content };

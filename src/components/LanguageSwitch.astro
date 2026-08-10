@@ -1,0 +1,38 @@
+---
+import { LANG_STORAGE_KEY, type Lang } from '@/i18n';
+const { lang } = Astro.props as { lang: Lang };
+const isZh = lang === 'zh';
+const pathname = Astro.url.pathname;
+const unprefixed = pathname.startsWith('/zh')
+  ? (pathname.replace(/^\/zh/, '') || '/')
+  : pathname;
+const enHref = unprefixed === '/' ? '/' : unprefixed;
+const zhHref = unprefixed === '/' ? '/zh/' : `/zh${unprefixed}`;
+---
+
+<div
+  class="flex items-center gap-1 ml-4 text-sm rounded-full border border-gray-950/10 dark:border-white/20 overflow-hidden"
+>
+  <a
+    href={enHref}
+    onclick={`try{localStorage.setItem('${LANG_STORAGE_KEY}','en')}catch(e){}`}
+    aria-current={isZh ? undefined : 'true'}
+    class={`px-2.5 py-1 transition-all ${
+      !isZh
+        ? 'bg-black text-white dark:bg-white dark:text-black'
+        : 'hover:bg-black/5 dark:hover:bg-white/10'
+    }`}
+    >EN</a
+  >
+  <a
+    href={zhHref}
+    onclick={`try{localStorage.setItem('${LANG_STORAGE_KEY}','zh')}catch(e){}`}
+    aria-current={isZh ? 'true' : undefined}
+    class={`px-2.5 py-1 transition-all ${
+      isZh
+        ? 'bg-black text-white dark:bg-white dark:text-black'
+        : 'hover:bg-black/5 dark:hover:bg-white/10'
+    }`}
+    >中文</a
+  >
+</div>

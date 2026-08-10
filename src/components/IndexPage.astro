@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+import Prose from '@/components/Prose.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SelectImage from '@/components/SelectImage';
+import type { Lang } from '@/i18n';
+import car from '@/images/car.jpg';
+import dog from '@/images/dog.jpg';
+import eagle from '@/images/eagle.jpg';
+import love from '@/images/love.jpg';
+import motorcycle from '@/images/motorcycle.jpg';
+
+const { lang } = Astro.props as { lang: Lang };
+const isZh = lang === 'zh';
+
+const exampleImgs = isZh
+  ? [
+      { src: car, alt: '汽车 | AI 智能抠图 - BgGone' },
+      { src: dog, alt: '宠物 | AI 去背景 - BgGone' },
+      { src: eagle, alt: '动物 | AI 抠图 - BgGone' },
+      { src: love, alt: '人物 | AI 人物抠图 - BgGone' },
+      { src: motorcycle, alt: '运动 | AI 去除背景 - BgGone' },
+    ]
+  : [
+      { src: car, alt: 'Car | AI Background Remover - BgGone' },
+      { src: dog, alt: 'Pet | AI Background Removal - BgGone' },
+      { src: eagle, alt: 'Animal | AI Remove Background - BgGone' },
+      { src: love, alt: 'People | AI Remove the Background of people - BgGone' },
+      { src: motorcycle, alt: 'Sports | AI Remove Bg - BgGone' },
+    ];
+
+const pageTitle = isZh ? 'AI 智能抠图' : 'AI Background Remover';
+const secondTitle = isZh
+  ? '免费、批量、无需登录、画质无损'
+  : 'Free, Batch, No Login, No Quality Loss';
+const title = isZh
+  ? 'BgGone - 免费 AI 抠图工具，免费、批量、无需登录、画质无损'
+  : 'BgGone - Free AI Background Remover. Free, Batch, No Login, No Quality Loss';
+
+const entry = await getEntry('content', `${lang}/index`);
+const { Content } = await render(entry!);
+---
+
+<BaseLayout
+  lang={lang}
+  pageTitle={pageTitle}
+  secondTitle={secondTitle}
+  title={title}
+>
+  <SelectImage lang={lang} client:load>
+    {
+      exampleImgs.map(({ src, alt }) => (
+        <Image
+          class="w-13 md:w-16 rounded-md cursor-pointer"
+          src={src}
+          alt={alt}
+        />
+      ))
+    }
+  </SelectImage>
+
+  <div class="mt-5 md:mt-8 px-4 main-width">
+    <Prose>
+      <Content />
+    </Prose>
+
+    <div class="mt-4" id="back-to-top">
+      <a class="cursor-pointer hover:underline"
+        >{isZh ? '立即去除背景' : 'Remove Backgrounds Now'}</a
+      >
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const backToTopButton = document.getElementById('back-to-top');
+  backToTopButton?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  });
+</script>

@@ -1,4 +1,9 @@
 ---
+const { lang } = Astro.props;
+const logoAlt =
+  lang === 'zh'
+    ? 'BgGone - 免费 AI 抠图工具'
+    : 'BgGone - Free AI Background Remover';
 // const nav = [
 //   { title: 'AI Background Remover', url: '/' },
 //   { title: 'Portfolio', url: '/portfolio' },
@@ -9,11 +14,7 @@
 ---
 
 <div class="flex items-center text-xl">
-  <img
-    class="w-8 h-8"
-    src="/favicon_48x48.png"
-    alt="BgGone - Free AI Background Remover"
-  />
+  <img class="w-8 h-8" src="/favicon_48x48.png" alt={logoAlt} />
   <a class="mx-4" href="/">BgGone</a>
   <!-- <div class="hidden sm:block">
     {

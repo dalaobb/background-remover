@@ -1,15 +1,50 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
 import '../styles/global.css';
 
-const { pageTitle, secondTitle, title } = Astro.props;
-const description =
-  'A free, private background remover that runs entirely in your browser. Upload, drag, or paste images to remove backgrounds using AI — no uploads, no tracking.';
+const { lang, pageTitle, secondTitle, title } = Astro.props;
+const isZh = lang === 'zh';
+
+const description = isZh
+  ? '一款免费、注重隐私的背景去除工具，完全在浏览器中运行。上传、拖拽或粘贴图片，使用 AI 去除背景——不上传、不追踪。'
+  : 'A free, private background remover that runs entirely in your browser. Upload, drag, or paste images to remove backgrounds using AI — no uploads, no tracking.';
+const keywords = isZh
+  ? '抠图, 去背景, 背景去除, 免费抠图工具, 透明PNG, AI抠图, AI图像处理'
+  : 'background remover, remove background, background removal, free background remover, transparent PNG, AI image editing';
+
+const pathname = Astro.url.pathname;
+const unprefixed = pathname.startsWith('/zh')
+  ? (pathname.replace(/^\/zh/, '') || '/')
+  : pathname;
+const enUrl = getAbsoluteLocaleUrl('en', unprefixed);
+const zhUrl = getAbsoluteLocaleUrl('zh', unprefixed);
+const canonical = isZh ? zhUrl : enUrl;
+const ogImage = `${Astro.site}/bg-gone.jpg`;
 ---
 
-<html lang="en" class="font-display text-[16px]">
+<html lang={lang} data-lang={lang} class="font-display text-[16px]">
   <head>
+    <script is:inline>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('bgg-lang');
+        } catch (e) {}
+        if (stored) return;
+        var path = location.pathname;
+        var onIndex = path === '/' || path === '/zh/';
+        if (!onIndex) return;
+        var nav = (navigator.language || '').toLowerCase();
+        var prefersZh = nav.indexOf('zh') === 0;
+        if (prefersZh && path !== '/zh/') {
+          location.replace('/zh/');
+        } else if (!prefersZh && path === '/zh/') {
+          location.replace('/');
+        }
+      })();
+    </script>
     <title>{title}</title>
     <meta charset="utf-8" />
     <meta
@@ -17,24 +52,26 @@ const description =
       content="width=device-width,initial-scale=1.0,maximum-scale=5.0,minimum-scale=1.0,viewport-fit=cover"
     />
     <meta name="description" content={description} />
-    <meta
-      name="keywords"
-      content="background remover, remove background, background removal, free background remover, transparent PNG, AI image editing"
-    />
+    <meta name="keywords" content={keywords} />
     <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="zh" href={zhUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
 
     <!-- Open Graph (Facebook, LinkedIn, etc.) -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://bgg.one" />
-    <meta property="og:image" content="https://bgg.one/bg-gone.jpg" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://bgg.one/bg-gone.jpg" />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" type="image/png" href="/favicon_32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon_48x48.png" sizes="48x48" />
@@ -59,7 +96,7 @@ const description =
     </script>
   </head>
   <body class="px-4 text-gray-950 dark:bg-gray-950 dark:text-white">
-    <Header />
+    <Header lang={lang} />
     <h1
       class="text-center py-6 sm:py-8 text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl"
     >

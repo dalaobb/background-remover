@@ -1,14 +1,17 @@
 import { useRef, useEffect } from 'react';
+import { t, type Lang } from '@/i18n';
 
 export default function ImgCompareSlider({
   beforeSrc,
   afterSrc,
   processing,
+  lang = 'en',
   onClose,
 }: {
   beforeSrc?: string;
   afterSrc?: string;
   processing?: boolean;
+  lang?: Lang;
   onClose: () => void;
 }) {
   const imgContainerRef = useRef<HTMLDivElement>(null);
@@ -123,7 +126,7 @@ export default function ImgCompareSlider({
         >
           <div className="text-white text-center">
             <div className="inline-block w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
-            <p>Processing...</p>
+            <p>{t(lang, 'processing')}</p>
           </div>
         </div>
       ) : (

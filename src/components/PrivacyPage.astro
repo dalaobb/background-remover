@@ -1,0 +1,33 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Prose from '@/components/Prose.astro';
+import type { Lang } from '@/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const isZh = lang === 'zh';
+
+const entry = await getEntry('content', `${lang}/privacy`);
+const { Content } = await render(entry!);
+
+const pageTitle = isZh ? '隐私政策' : 'Privacy Policy';
+const secondTitle = isZh
+  ? '您的图片属于您自己'
+  : 'Your images belong to you';
+const title = isZh
+  ? '隐私政策 | BgGone - 免费 AI 抠图工具'
+  : 'Privacy Policy | BgGone - Free AI Background Remover';
+---
+
+<BaseLayout
+  lang={lang}
+  pageTitle={pageTitle}
+  secondTitle={secondTitle}
+  title={title}
+>
+  <div class="mt-5 md:mt-8 px-4 main-width">
+    <Prose>
+      <Content />
+    </Prose>
+  </div>
+</BaseLayout>

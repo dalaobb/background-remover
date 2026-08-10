@@ -4,6 +4,7 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import { removeBackground } from '@/scripts/remover';
 import { isMobileDevice } from '@/scripts/remover/utils';
+import { t, type Lang } from '@/i18n';
 import PreviewDownload from './PreviewDownload';
 
 function formatTime(ms: number) {
@@ -25,7 +26,10 @@ function formatTime(ms: number) {
 
 const smallModelKey = 'WasmOnnxModel';
 
-export default function SelectImage({ children }: React.PropsWithChildren) {
+export default function SelectImage({
+  children,
+  lang = 'en',
+}: React.PropsWithChildren<{ lang?: Lang }>) {
   const fileInputId = useId();
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -261,7 +265,7 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
       FileSaver.saveAs(content, 'BgGone.zip');
     } catch (err) {
       console.error(err);
-      alert('Failed to package images.');
+      alert(t(lang, 'failedPackage'));
     }
   };
 
@@ -305,9 +309,9 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
                 ></path>
               </svg>
               <div className="text-sm sm:text-base">
-                <p className="mt-2">Click</p>
-                <p className="my-1">Drag & Drop</p>
-                <p>Paste Image (Ctrl+V/Cmd+V)</p>
+                <p className="mt-2">{t(lang, 'click')}</p>
+                <p className="my-1">{t(lang, 'dragDrop')}</p>
+                <p>{t(lang, 'pasteImage')}</p>
               </div>
             </div>
           </label>
@@ -317,8 +321,8 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
             className="text-center mb-2 sm:text-start text-sm sm:mr-8 xl:text-lg xl:mr-16"
             onClick={clearLocalStorage}
           >
-            <p>Start Removing Backgrounds</p>
-            <p>No image? Try one of these:</p>
+            <p>{t(lang, 'startRemoving')}</p>
+            <p>{t(lang, 'tryExamples')}</p>
           </div>
           <div
             className="relative flex flex-1 justify-around sm:justify-between"
@@ -339,9 +343,7 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
         </div>
       </div>
       <div className="main-width text-yellow-500 flex justify-center items-center text-sm md:justify-start md:text-base h-7 md:h-8">
-        {wasmOnnxModel && (
-          <span>Notice: You’re using a lightweight model.</span>
-        )}
+        {wasmOnnxModel && <span>{t(lang, 'noticeLightModel')}</span>}
       </div>
       {!!imgSliders?.length && (
         <div>
@@ -349,10 +351,10 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="text-black/90 dark:text-white/90 flex items-center gap-4">
                 <span className="font-semibold">
-                  Selected: <span>{imgSliders?.length}</span>
+                  {t(lang, 'selected')} <span>{imgSliders?.length}</span>
                 </span>
                 <div className="flex items-center gap-2">
-                  <label>Output format:</label>
+                  <label>{t(lang, 'outputFormat')}</label>
                   <select
                     className="px-3 py-1 rounded-lg bg-white/20 border border-black/30"
                     value={format}
@@ -371,17 +373,17 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
                   className="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all transform hover:scale-105 shadow-lg"
                 >
                   {isDownloading
-                    ? 'Loading...'
+                    ? t(lang, 'loading')
                     : isLoading
-                    ? 'Removing...'
-                    : 'Start'}
+                    ? t(lang, 'removing')
+                    : t(lang, 'start')}
                 </button>
                 <button
                   disabled={isLoading}
                   onClick={() => setImgSliders([])}
                   className="px-4 py-2 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition-all transform hover:scale-105"
                 >
-                  Clear
+                  {t(lang, 'clear')}
                 </button>
               </div>
             </div>
@@ -389,16 +391,13 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
           <div className="main-width text-rose-600 rounded-md pt-2 pb-6 md:text-lg">
             {outOfMemory && (
               <>
-                <span>
-                  ⚠️ Your device may struggle with this task. Try using a
-                  desktop for better results.
-                </span>
+                <span>{t(lang, 'oomWarning')}</span>
                 {!wasmOnnxModel && (
                   <button
                     onClick={changeModel}
                     className="mt-2 block w-full text-center py-3 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-all"
                   >
-                    Try a smaller model?
+                    {t(lang, 'trySmallerModel')}
                   </button>
                 )}
               </>
@@ -408,6 +407,7 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-3 main-max-width">
             {imgSliders?.map(({ beforeFile, afterFile, status }, index) => (
               <PreviewDownload
+                lang={lang}
                 className="break-inside-avoid mb-5 image-card border border-gray-200"
                 key={beforeFile.name + (afterFile?.name || '')}
                 beforeFile={beforeFile}
@@ -426,20 +426,20 @@ export default function SelectImage({ children }: React.PropsWithChildren) {
           >
             <div className="text-center">
               <h3 className="text-2xl font-semibold mb-4">
-                🎉 Done! Time taken: {time}
+                {t(lang, 'done', { time })}
               </h3>
               <div className="flex justify-center gap-4">
                 <button
                   onClick={downloadSingle}
                   className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg"
                 >
-                  Download
+                  {t(lang, 'download')}
                 </button>
                 <button
                   onClick={downloadAll}
                   className="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-full font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all transform hover:scale-105 shadow-lg"
                 >
-                  Download All as ZIP
+                  {t(lang, 'downloadAllZip')}
                 </button>
               </div>
             </div>
