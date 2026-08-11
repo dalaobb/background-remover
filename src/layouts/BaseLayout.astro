@@ -22,6 +22,40 @@ const enUrl = getAbsoluteLocaleUrl('en', unprefixed);
 const zhUrl = getAbsoluteLocaleUrl('zh', unprefixed);
 const canonical = isZh ? zhUrl : enUrl;
 const ogImage = `${Astro.site}/bg-gone.jpg`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: 'BgGone',
+      url: 'https://bgg.one',
+      logo: 'https://bgg.one/logo.png',
+    },
+    {
+      '@type': 'WebApplication',
+      name: 'BgGone',
+      url: 'https://bgg.one',
+      description,
+      applicationCategory: 'MultimediaApplication',
+      operatingSystem: 'Any',
+      browserRequirements: 'Requires a modern browser with WebAssembly support',
+      inLanguage: ['en', 'zh'],
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+      featureList: [
+        'AI background remover',
+        'Batch background removal',
+        'Runs entirely in the browser',
+        'No uploads, privacy-first',
+        'Free, no signup, no watermarks',
+      ],
+      image: ogImage,
+    },
+  ],
+};
 ---
 
 <html lang={lang} data-lang={lang} class="font-display text-[16px]">
@@ -54,11 +88,23 @@ const ogImage = `${Astro.site}/bg-gone.jpg`;
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="robots" content="index, follow" />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#030712"
+      media="(prefers-color-scheme: dark)"
+    />
 
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang="en" href={enUrl} />
     <link rel="alternate" hreflang="zh" href={zhUrl} />
     <link rel="alternate" hreflang="x-default" href={enUrl} />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
 
     <!-- Open Graph (Facebook, LinkedIn, etc.) -->
     <meta property="og:title" content={title} />
@@ -85,15 +131,10 @@ const ogImage = `${Astro.site}/bg-gone.jpg`;
     <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="sitemap" href="/sitemap.xml" />
 
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "BgGone",
-        "url": "https://bgg.one",
-        "logo": "https://bgg.one/logo.png"
-      }
-    </script>
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
   </head>
   <body class="px-4 text-gray-950 dark:bg-gray-950 dark:text-white">
     <Header lang={lang} />
@@ -114,6 +155,6 @@ const ogImage = `${Astro.site}/bg-gone.jpg`;
       is:inline
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-CZS9K7V64W"></script>
-    <script src="../scripts/do.js"></script>
+    <script src="../scripts/do.js" defer></script>
   </body>
 </html>

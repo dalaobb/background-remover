@@ -6,6 +6,8 @@ Remove backgrounds from multiple images with one click. No uploads. No logins. N
 
 Effortless AI-powered background remover. Drag & drop, paste, or upload multiple images. 100% free and privacy-first.
 
+Remove image background instantly with AI — no uploads, no signup, no watermarks.
+
 ## ⚙️ How It Works
 1. **Upload or Paste Images.** 
 Select multiple images from your device, paste them from your clipboard, or drag and drop them onto the page.

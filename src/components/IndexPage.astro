@@ -16,18 +16,18 @@ const isZh = lang === 'zh';
 
 const exampleImgs = isZh
   ? [
-      { src: car, alt: '汽车 | AI 智能抠图 - BgGone' },
-      { src: dog, alt: '宠物 | AI 去背景 - BgGone' },
-      { src: eagle, alt: '动物 | AI 抠图 - BgGone' },
-      { src: love, alt: '人物 | AI 人物抠图 - BgGone' },
-      { src: motorcycle, alt: '运动 | AI 去除背景 - BgGone' },
+      { src: car, alt: '去除背景后的汽车照片 | AI 抠图工具' },
+      { src: dog, alt: '透明背景的宠物抠图 | AI 去背景' },
+      { src: eagle, alt: '去除背景后的鹰 | AI 抠图工具' },
+      { src: love, alt: '透明背景的人物抠图 | AI 去背景' },
+      { src: motorcycle, alt: '去除背景后的摩托车 | AI 抠图工具' },
     ]
   : [
-      { src: car, alt: 'Car | AI Background Remover - BgGone' },
-      { src: dog, alt: 'Pet | AI Background Removal - BgGone' },
-      { src: eagle, alt: 'Animal | AI Remove Background - BgGone' },
-      { src: love, alt: 'People | AI Remove the Background of people - BgGone' },
-      { src: motorcycle, alt: 'Sports | AI Remove Bg - BgGone' },
+      { src: car, alt: 'Car photo with background removed | AI background remover' },
+      { src: dog, alt: 'Pet cutout with transparent background | BgGone' },
+      { src: eagle, alt: 'Eagle with background removed | AI background remover' },
+      { src: love, alt: 'Person cutout with transparent background | BgGone' },
+      { src: motorcycle, alt: 'Motorcycle with background removed | AI background remover' },
     ];
 
 const pageTitle = isZh ? 'AI 智能抠图' : 'AI Background Remover';
@@ -35,11 +35,42 @@ const secondTitle = isZh
   ? '免费、批量、无需登录、画质无损'
   : 'Free, Batch, No Login, No Quality Loss';
 const title = isZh
-  ? 'BgGone - 免费 AI 抠图工具，免费、批量、无需登录、画质无损'
-  : 'BgGone - Free AI Background Remover. Free, Batch, No Login, No Quality Loss';
+  ? 'AI 抠图工具 | BgGone - 免费、私密、无需登录'
+  : 'AI Background Remover | BgGone - Free, Private, No Login';
 
 const entry = await getEntry('content', `${lang}/index`);
 const { Content } = await render(entry!);
+
+function extractFaq(body: string) {
+  const faqs: { q: string; a: string }[] = [];
+  let q = '';
+  let buf: string[] = [];
+  const flush = () => {
+    const answer = buf.join(' ').replace(/\s+/g, ' ').trim();
+    if (q && answer) faqs.push({ q: q.replace(/\*\*/g, '').trim(), a: answer });
+  };
+  for (const line of body.split('\n')) {
+    if (line.startsWith('### ')) {
+      flush();
+      q = line.slice(4);
+      buf = [];
+    } else if (q) {
+      buf.push(line);
+    }
+  }
+  flush();
+  return faqs;
+}
+
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: extractFaq(entry!.body).map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+});
 ---
 
 <BaseLayout
@@ -64,6 +95,8 @@ const { Content } = await render(entry!);
     <Prose>
       <Content />
     </Prose>
+
+    <script type="application/ld+json" set:html={faqJsonLd} />
 
     <div class="mt-4" id="back-to-top">
       <a class="cursor-pointer hover:underline"
