@@ -10,9 +10,6 @@ const isZh = lang === 'zh';
 const description = isZh
   ? 'BgGone（bgg.one）：免费、私密的 AI 抠图工具，完全在浏览器中运行。无需登录、无需上传，一键去除图片背景。'
   : 'BgGone (bgg.one): a free, private AI background remover that runs entirely in your browser. No login, no uploads — remove image backgrounds instantly.';
-const keywords = isZh
-  ? '抠图, 去背景, 背景去除, 免费抠图工具, 透明PNG, AI抠图, AI图像处理'
-  : 'background remover, remove background, background removal, free background remover, transparent PNG, AI image editing';
 
 const pathname = Astro.url.pathname;
 const unprefixed = pathname.startsWith('/zh')
@@ -21,7 +18,9 @@ const unprefixed = pathname.startsWith('/zh')
 const enUrl = getAbsoluteLocaleUrl('en', unprefixed);
 const zhUrl = getAbsoluteLocaleUrl('zh', unprefixed);
 const canonical = isZh ? zhUrl : enUrl;
-const ogImage = new URL('/bggone.webp', Astro.site).href;
+const ogImage = new URL('/bggone.jpg', Astro.site).href;
+const ogImageAlt = isZh ? 'BgGone – 免费 AI 抠图工具' : 'BgGone – Free AI Background Remover';
+const isHome = pathname === '/' || pathname === '/zh/';
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -31,29 +30,33 @@ const structuredData = {
       url: 'https://bgg.one',
       logo: 'https://bgg.one/logo.png',
     },
-    {
-      '@type': 'WebApplication',
-      name: 'BgGone',
-      url: 'https://bgg.one',
-      description,
-      applicationCategory: 'MultimediaApplication',
-      operatingSystem: 'Any',
-      browserRequirements: 'Requires a modern browser with WebAssembly support',
-      inLanguage: ['en', 'zh'],
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-      },
-      featureList: [
-        'AI background remover',
-        'Batch background removal',
-        'Runs entirely in the browser',
-        'No uploads, privacy-first',
-        'Free, no signup, no watermarks',
-      ],
-      image: ogImage,
-    },
+    ...(isHome
+      ? [
+          {
+            '@type': 'WebApplication',
+            name: 'BgGone',
+            url: 'https://bgg.one',
+            description,
+            applicationCategory: 'MultimediaApplication',
+            operatingSystem: 'Any',
+            browserRequirements: 'Requires a modern browser with WebAssembly support',
+            inLanguage: ['en', 'zh'],
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+            },
+            featureList: [
+              'AI background remover',
+              'Batch background removal',
+              'Runs entirely in the browser',
+              'No uploads, privacy-first',
+              'Free, no signup, no watermarks',
+            ],
+            image: ogImage,
+          },
+        ]
+      : []),
   ],
 };
 ---
@@ -86,7 +89,6 @@ const structuredData = {
       content="width=device-width,initial-scale=1.0,maximum-scale=5.0,minimum-scale=1.0,viewport-fit=cover"
     />
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywords} />
     <meta name="robots" content="index, follow" />
     <meta
       name="theme-color"
@@ -111,13 +113,20 @@ const structuredData = {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="BgGone" />
+    <meta property="og:locale" content={isZh ? 'zh_CN' : 'en_US'} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <link rel="icon" type="image/png" href="/favicon_32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon_48x48.png" sizes="48x48" />
