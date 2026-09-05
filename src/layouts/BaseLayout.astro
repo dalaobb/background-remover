@@ -18,7 +18,7 @@ const unprefixed = pathname.startsWith('/zh')
 const enUrl = getAbsoluteLocaleUrl('en', unprefixed);
 const zhUrl = getAbsoluteLocaleUrl('zh', unprefixed);
 const canonical = isZh ? zhUrl : enUrl;
-const ogImage = new URL('/bggone.jpg', Astro.site).href;
+const ogImage = new URL('/bggone-bg-remover.jpg', Astro.site).href;
 const ogImageAlt = isZh ? 'BgGone – 免费 AI 抠图工具' : 'BgGone – Free AI Background Remover';
 const isHome = pathname === '/' || pathname === '/zh/';
 const structuredData = {
