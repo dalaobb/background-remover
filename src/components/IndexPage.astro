@@ -30,13 +30,13 @@ const exampleImgs = isZh
       { src: motorcycle, alt: 'Motorcycle with background removed | AI background remover' },
     ];
 
-const pageTitle = isZh ? 'AI 智能抠图' : 'AI Background Remover';
+const pageTitle = isZh ? 'BgGone – AI 抠图工具' : 'BgGone – AI Background Remover';
 const secondTitle = isZh
-  ? '免费、批量、无需登录、画质无损'
-  : 'Free, Batch, No Login, No Quality Loss';
+  ? '免费 · 批量 · 无需登录 · 无需上传 · 画质无损'
+  : 'Free · Batch · No Login · No Upload · No Quality Loss';
 const title = isZh
-  ? 'AI 抠图工具 | BgGone - 免费、私密、无需登录'
-  : 'AI Background Remover | BgGone - Free, Private, No Login';
+  ? 'BgGone – 免费 AI 抠图工具，无需登录、无需上传'
+  : 'BgGone – Free AI Background Remover, No Login or Upload';
 
 const entry = await getEntry('content', `${lang}/index`);
 const { Content } = await render(entry!);
@@ -54,6 +54,9 @@ function extractFaq(body: string) {
       flush();
       q = line.slice(4);
       buf = [];
+    } else if (line.startsWith('## ')) {
+      flush();
+      q = '';
     } else if (q) {
       buf.push(line);
     }
