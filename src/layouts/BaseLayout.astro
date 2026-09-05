@@ -21,7 +21,7 @@ const unprefixed = pathname.startsWith('/zh')
 const enUrl = getAbsoluteLocaleUrl('en', unprefixed);
 const zhUrl = getAbsoluteLocaleUrl('zh', unprefixed);
 const canonical = isZh ? zhUrl : enUrl;
-const ogImage = `${Astro.site}/bg-gone.jpg`;
+const ogImage = new URL('/bggone.webp', Astro.site).href;
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
